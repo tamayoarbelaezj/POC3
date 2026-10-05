@@ -10,13 +10,9 @@ logger = logging.getLogger(__name__)
 
 _EMAIL_RE = re.compile(r"[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}")
 # Celulares (3XX) y fijos (60X) con indicativo +57 opcional.
-_TELEFONO_RE = re.compile(
-    r"(?<![\w-])(?:\+?57[\s-]?)?(?:3\d{2}|60\d)[\s-]?\d{3}[\s-]?\d{4}(?!\d)"
-)
+_TELEFONO_RE = re.compile(r"(?<![\w-])(?:\+?57[\s-]?)?(?:3\d{2}|60\d)[\s-]?\d{3}[\s-]?\d{4}(?!\d)")
 # Cédulas: 6 a 10 dígitos, con o sin puntos. No toca POL-/SIN-.
-_CEDULA_RE = re.compile(
-    r"(?<![\w-])(?:\d{1,3}(?:\.\d{3}){1,3}|\d{6,10})(?![\d.]?\d)"
-)
+_CEDULA_RE = re.compile(r"(?<![\w-])(?:\d{1,3}(?:\.\d{3}){1,3}|\d{6,10})(?![\d.]?\d)")
 
 _INJECTION_PATTERNS = [
     r"ignor\w*\s+(?:\w+\s+){0,3}(?:instrucciones|reglas|indicaciones)",
@@ -67,9 +63,7 @@ def _respuesta_texto(texto: str) -> "LlmResponse":
     from google.adk.models import LlmResponse
     from google.genai import types
 
-    return LlmResponse(
-        content=types.Content(role="model", parts=[types.Part(text=texto)])
-    )
+    return LlmResponse(content=types.Content(role="model", parts=[types.Part(text=texto)]))
 
 
 def before_model_callback(
@@ -84,8 +78,9 @@ def before_model_callback(
     if ultimo_usuario is not None:
         texto = " ".join(p.text for p in ultimo_usuario.parts if p.text)
         if es_prompt_injection(texto):
-            logger.warning("Posible prompt injection bloqueado (agente=%s)",
-                           callback_context.agent_name)
+            logger.warning(
+                "Posible prompt injection bloqueado (agente=%s)", callback_context.agent_name
+            )
             return _respuesta_texto(MENSAJE_BLOQUEO)
 
     for content in contents:
